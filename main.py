@@ -5,8 +5,12 @@ FONT = "Ariel"
 
 # GUI Setup
 window = tkinter.Tk()
-window.title("Spanish Flashcard")
+window.title("Spanish Flashcards")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+
+# Creates our icon.
+icon = tkinter.PhotoImage(file="images/spanish.png")
+window.iconphoto(False, icon)
 
 # Creates our flashcard
 canvas = tkinter.Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
