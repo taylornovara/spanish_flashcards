@@ -9,12 +9,17 @@ FONT = "Ariel"
 def new_word():
     """Generates a new Spanish word to display on the flashcard"""
 
-    # Random number
+    # Random number.
     random_number = random.randint(0, 99)
 
+    # Opens spanish_words.csv, saves the dataframe to a dictionary, and organizes the dictionary to column-value.
     df = pd.read_csv("data/spanish_words.csv")
     data = df.to_dict(orient="records")
+
+    # Stores the random Spanish word in a variable called word
     word = data[random_number]["Spanish"]
+
+    # Writes the title and word onto the canvas
     canvas.itemconfig(card_title, text="Spanish")
     canvas.itemconfig(card_word, text=word)
 
