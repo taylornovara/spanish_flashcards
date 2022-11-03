@@ -1,30 +1,36 @@
 import tkinter
+
+import pandas
 import pandas as pd
 import random
 
 BACKGROUND_COLOR = "#B1DDC6"
 FONT = "Ariel"
-
-# Opens spanish_words.csv, saves the dataframe to a dictionary, and organizes the dictionary to column-value.
-df = pd.read_csv("data/spanish_words.csv")
-data = df.to_dict(orient="records")
-
 word = {}
+data = {}
+
+try:
+    # Opens spanish_words.csv, saves the dataframe to a dictionary, and organizes the dictionary to column-value.
+    data = pd.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    original_data = pd.read_csv("data/spanish_words.csv")
+    to_learn = original_data.to_dict(orient="records")
+else:
+    to_learn = data.to_dict(orient="records")
 
 
 def new_word():
     """Generates a new Spanish word to display on the flashcard"""
 
-    # Random number.
-    random_number = random.randint(0, 99)
-
     # Stores the random Spanish word in a global variable called word
     global word
-    word = data[random_number]
 
     # Cancels the 3-second timer in flip_timer
     global flip_timer
     window.after_cancel(flip_timer)
+
+    # Random word
+    word = random.choice(to_learn)
 
     # Writes the title and word onto the canvas
     canvas.itemconfig(card_title, text="Spanish", fill="black")
@@ -44,6 +50,15 @@ def flip_card():
     canvas.itemconfig(card_title, text="English", fill="white")
     canvas.itemconfig(card_word, text=word["English"], fill="white")
     canvas.itemconfig(card_image, image=card_back_img)
+
+
+def is_known():
+    """Removes the word from the csv file so that it won't be shown again and calls new_word()"""
+
+    to_learn.remove(word)
+    data = pandas.DataFrame(to_learn)
+    data.to_csv("data/words_to_learn.csv", index=False)
+    new_word()
 
 
 # GUI Setup
@@ -75,7 +90,7 @@ wrong_button.grid(row=1, column=0, pady=50)
 
 right_button_img = tkinter.PhotoImage(file="images/right.png")
 right_button = tkinter.Button(image=right_button_img, border=0, highlightthickness=0, width=95, height=95,
-                              command=new_word)
+                              command=is_known)
 right_button.grid(row=1, column=1, pady=50)
 
 # Calls new_word() so that a Spanish word is displayed
